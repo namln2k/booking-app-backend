@@ -1,0 +1,4 @@
+name: Local
+values:
+  - key: BaseUrl
+    value: ''
