@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { ListQueryDto } from '../common/dto/list-query.dto';
 import { StockService } from './stock.service';
 import { StockRepository } from './stock.repository';
 
@@ -29,7 +30,9 @@ describe('StockService', () => {
   });
 
   it('should return stock from the repository', async () => {
-    await expect(service.findAll()).resolves.toEqual([]);
-    expect(stockRepository.findAll).toHaveBeenCalledTimes(1);
+    const query = new ListQueryDto();
+
+    await expect(service.findAll(query)).resolves.toEqual([]);
+    expect(stockRepository.findAll).toHaveBeenCalledWith(query);
   });
 });
