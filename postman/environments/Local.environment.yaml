@@ -1,4 +1,12 @@
+owner: "16761938"
+team: "10693658"
+lastUpdatedBy: "16761938"
+lastRevision: 1782276467000
 name: Local
+color: null
 values:
   - key: BaseUrl
-    value: ''
+    value: ""
+    enabled: true
+createdAt: 2026-06-24T03:10:10.000Z
+updatedAt: 2026-06-24T04:47:47.000Z
