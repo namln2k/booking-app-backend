@@ -1,98 +1,170 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Ecommerce App Backend
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+NestJS backend for an ecommerce system. The local development stack runs the API with PostgreSQL, Redis, Kafka, and Zookeeper through Docker Compose.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Requirements
 
-## Description
+- Node.js 20+
+- npm
+- Docker with Docker Compose v2
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Fresh Setup
 
-## Project setup
+Create your local environment file:
 
 ```bash
-$ npm install
+cp .env.example .env
 ```
 
-## Compile and run the project
+Install dependencies for local tooling and tests:
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+npm install
 ```
 
-## Run tests
+Start the full local stack:
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+docker compose up --build
 ```
 
-## Deployment
+The API is exposed at:
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+```text
+http://localhost:3000
+```
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+## Local Services
+
+Compose starts these services:
+
+| Service   | Container             | Host port | Internal URL         |
+| --------- | --------------------- | --------- | -------------------- |
+| API       | `ecommerce_app`       | `3000`    | `http://app:3000`    |
+| Postgres  | `ecommerce_postgres`  | `5432`    | `postgres:5432`      |
+| Redis     | `ecommerce_redis`     | `6379`    | `redis://redis:6379` |
+| Kafka     | `ecommerce_kafka`     | `9092`    | `kafka:29092`        |
+| Zookeeper | `ecommerce_zookeeper` | `2181`    | `zookeeper:2181`     |
+
+The app container receives a Docker-specific `DATABASE_URL` from `compose.yaml`:
+
+```text
+postgres://postgres:postgres@postgres:5432/ecommerce_app
+```
+
+Outside Docker, `.env` should point at localhost:
+
+```text
+postgres://postgres:postgres@localhost:5432/ecommerce_app
+```
+
+## Development Workflow
+
+Run the app in Docker:
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+docker compose up
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+The app service runs:
 
-## Resources
+```bash
+npm run start:dev
+```
 
-Check out a few resources that may come in handy when working with NestJS:
+Source code is bind-mounted into the container, and watcher polling is enabled for reliable Nest hot reload inside Docker.
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+For Docker Compose watch mode:
 
-## Support
+```bash
+docker compose watch
+```
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+## Database Flow
 
-## Stay in touch
+This project uses TypeORM migrations. Schema synchronization is disabled:
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+```ts
+synchronize: false;
+```
 
-## License
+Do not rely on automatic schema sync in development. Treat migrations as the source of truth.
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+### Apply Migrations
+
+Run migrations inside the app container:
+
+```bash
+docker compose exec app npm run migration:run
+```
+
+Show migration status:
+
+```bash
+docker compose exec app npm run migration:show
+```
+
+Revert the last migration:
+
+```bash
+docker compose exec app npm run migration:revert
+```
+
+### Seed Data
+
+After migrations, seed the database:
+
+```bash
+docker compose exec app npm run seed
+```
+
+The seed script is idempotent: it uses stable IDs and conflict handling so it can be re-run without duplicating rows.
+
+## Changing the Schema
+
+When entities change:
+
+1. Add or update the TypeORM entity.
+2. Add a migration under `src/database/migrations`.
+3. Run the migration in Docker:
+
+```bash
+docker compose exec app npm run migration:run
+```
+
+4. Update the seed script if the new schema needs baseline data.
+5. Run tests:
+
+```bash
+npm test -- --runInBand
+```
+
+## Useful Commands
+
+```bash
+# Type check without writing to dist/
+npx tsc --noEmit --incremental false
+
+# Unit tests
+npm test -- --runInBand
+
+# Build
+npm run build
+
+# Check resolved Compose config
+docker compose config
+
+# Open a shell in the app container
+docker compose exec app sh
+
+# Connect to Postgres
+docker compose exec postgres psql -U postgres -d ecommerce_app
+```
+
+## Notes
+
+- `compose.yaml` is the canonical Compose file. Avoid adding `docker-compose.yml` or `docker-compose.yaml`.
+- `node_modules` is stored in a Docker volume for the app container. After changing dependencies, rebuild or run `docker compose exec app npm install`.
+- If local `npm run build` fails with `EACCES` in `dist/`, the directory was likely written by a container user. Remove or fix ownership before building locally.
+- Postman collection names intentionally still reference the original booking collection and should not be renamed unless the Postman workspace is being migrated too.
+- Kafka is available for future messaging work, but the current app code does not publish or consume Kafka messages yet.
