@@ -25,7 +25,7 @@ import jwtConfig from './config/jwt.config';
         type: 'postgres',
         url: database.url,
         autoLoadEntities: true,
-        synchronize: process.env.NODE_ENV !== 'production',
+        synchronize: false,
       }),
     }),
     UsersModule,
