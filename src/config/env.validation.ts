@@ -53,6 +53,14 @@ class EnvironmentVariables {
   @IsString()
   @IsOptional()
   KAFKA_CLIENT_ID?: string;
+
+  @IsString()
+  @IsOptional()
+  KAFKA_CONSUMER_GROUP_ID?: string;
+
+  @IsString()
+  @IsOptional()
+  KAFKA_CONSUME_FROM_BEGINNING?: string;
 }
 
 export function validate(config: Record<string, unknown>) {

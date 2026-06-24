@@ -4,12 +4,14 @@ import { DataSource } from 'typeorm';
 import { OrderItem } from '../orders/order-item.entity';
 import { Order } from '../orders/order.entity';
 import { Product } from '../products/product.entity';
+import { DomainEventRecord } from '../kafka/domain-event.entity';
 import { Stock } from '../stock/stock.entity';
 import { User } from '../users/user.entity';
 import { InitialSchema1760000000000 } from './migrations/1760000000000-InitialSchema';
 import { AddStockQuantityNonNegative1760000001000 } from './migrations/1760000001000-AddStockQuantityNonNegative';
 import { AddStockReservedQuantity1760000002000 } from './migrations/1760000002000-AddStockReservedQuantity';
 import { AddUserAuthFields1760000003000 } from './migrations/1760000003000-AddUserAuthFields';
+import { CreateDomainEvents1760000004000 } from './migrations/1760000004000-CreateDomainEvents';
 
 config({ path: `.env.${process.env.NODE_ENV ?? 'development'}`, quiet: true });
 config({ quiet: true });
@@ -23,12 +25,13 @@ if (!databaseUrl) {
 const AppDataSource = new DataSource({
   type: 'postgres',
   url: databaseUrl,
-  entities: [User, Product, Stock, Order, OrderItem],
+  entities: [User, Product, Stock, Order, OrderItem, DomainEventRecord],
   migrations: [
     InitialSchema1760000000000,
     AddStockQuantityNonNegative1760000001000,
     AddStockReservedQuantity1760000002000,
     AddUserAuthFields1760000003000,
+    CreateDomainEvents1760000004000,
   ],
   migrationsTableName: 'typeorm_migrations',
   synchronize: false,

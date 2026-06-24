@@ -4,12 +4,7 @@ import { Kafka, Producer } from 'kafkajs';
 import kafkaConfig from '../config/kafka.config';
 import { Order } from '../orders/order.entity';
 import { Stock } from '../stock/stock.entity';
-
-interface DomainEventEnvelope<T> {
-  eventName: string;
-  occurredAt: string;
-  data: T;
-}
+import { DomainEventEnvelope } from './domain-event.types';
 
 @Injectable()
 export class KafkaEventPublisherService implements OnModuleDestroy {
@@ -23,6 +18,7 @@ export class KafkaEventPublisherService implements OnModuleDestroy {
     await this.publish('orders.created', {
       eventName: 'OrderCreated',
       occurredAt: new Date().toISOString(),
+      aggregateId: order.id,
       data: {
         id: order.id,
         userId: order.userId,
@@ -45,6 +41,7 @@ export class KafkaEventPublisherService implements OnModuleDestroy {
     await this.publish('stock.depleted', {
       eventName: 'StockDepleted',
       occurredAt: new Date().toISOString(),
+      aggregateId: stock.id,
       data: {
         id: stock.id,
         productId: stock.productId,
