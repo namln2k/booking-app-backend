@@ -2,11 +2,11 @@ workspace:
   id: 8821478b-384b-4658-bc16-6490d10a7bfe
 localResources:
   collections:
-    - ../postman/collections/Booking App Backend
+    - ../postman/collections/Ecommerce App Backend
   environments:
     - ../postman/environments/Local.environment.yaml
 cloudResources:
   collections:
-    ../postman/collections/Booking App Backend: 16761938-96f9ce77-b9ff-4639-b616-a8cfd4340aa0
+    ../postman/collections/Ecommerce App Backend: 16761938-96f9ce77-b9ff-4639-b616-a8cfd4340aa0
   environments:
     ../postman/environments/Local.environment.yaml: 16761938-01069017-e092-408e-8979-c4b5814c6504

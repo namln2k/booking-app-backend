@@ -4,19 +4,36 @@ services:
       context: .
       dockerfile: Dockerfile
       target: development
-    container_name: booking_app
+    container_name: ecommerce_app
     ports:
       - '${PORT:-3000}:3000'
     env_file:
       - .env
     environment:
       NODE_ENV: ${NODE_ENV:-development}
-      DATABASE_URL: postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-booking_app}
+      DATABASE_URL: postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-ecommerce_app}
       REDIS_URL: redis://redis:6379
       KAFKA_BROKERS: kafka:29092
+      CHOKIDAR_USEPOLLING: 'true'
+      WATCHPACK_POLLING: 'true'
+      TSC_WATCHFILE: PriorityPollingInterval
     volumes:
       - .:/usr/src/app
       - node_modules:/usr/src/app/node_modules
+    develop:
+      watch:
+        - action: sync
+          path: ./src
+          target: /usr/src/app/src
+        - action: sync
+          path: ./test
+          target: /usr/src/app/test
+        - action: rebuild
+          path: package.json
+        - action: rebuild
+          path: package-lock.json
+        - action: rebuild
+          path: Dockerfile
     depends_on:
       postgres:
         condition: service_healthy
@@ -28,12 +45,12 @@ services:
 
   postgres:
     image: postgres:16-alpine
-    container_name: booking_postgres
+    container_name: ecommerce_postgres
     restart: unless-stopped
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
-      POSTGRES_DB: ${POSTGRES_DB:-booking_app}
+      POSTGRES_DB: ${POSTGRES_DB:-ecommerce_app}
     ports:
       - '5432:5432'
     volumes:
@@ -46,7 +63,7 @@ services:
 
   redis:
     image: redis:7-alpine
-    container_name: booking_redis
+    container_name: ecommerce_redis
     restart: unless-stopped
     ports:
       - '6379:6379'
@@ -60,7 +77,7 @@ services:
 
   zookeeper:
     image: confluentinc/cp-zookeeper:7.6.1
-    container_name: booking_zookeeper
+    container_name: ecommerce_zookeeper
     restart: unless-stopped
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
@@ -78,7 +95,7 @@ services:
 
   kafka:
     image: confluentinc/cp-kafka:7.6.1
-    container_name: booking_kafka
+    container_name: ecommerce_kafka
     restart: unless-stopped
     depends_on:
       zookeeper:
